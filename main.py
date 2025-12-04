@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import discord
 from discord.ext import commands
-import os
+
+from config import settings
 
 #Get bot token from env
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = settings.discord_token
 
 #Supported events
 intents = discord.Intents.default()
