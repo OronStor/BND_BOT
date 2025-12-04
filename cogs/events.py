@@ -11,7 +11,7 @@ class EventsCog(commands.Cog):
         print(f"{member.mention} joined BND!")
 
 
-    #Notification of changing members`s status offline -> online
+    #Notification of changing members`s status offline/idle/busy -> online
     @commands.Cog.listener()
     async def on_presence_update(self, before, after):
         if after.status == discord.Status.online:

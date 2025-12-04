@@ -51,7 +51,9 @@ class NotificationCog(commands.Cog):
             user_id = birthdays[str(days)]
             mention = f"<@{user_id}>"
             await ctx.send(f"{mention} - {days} days")
-        
+
+    
+
 
 
 
