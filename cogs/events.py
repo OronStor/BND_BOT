@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from discord.ext import commands
 import discord
+from data.roles import roles
 
 ACTIVITY_IGNORE_LIST = [
     "Visual Studio Code"
@@ -33,16 +34,32 @@ class EventsCog(commands.Cog):
                 case discord.Status.do_not_disturb:
                     await channel.send(f"{after.mention} isn`t busy now!")
 
-        #checking if its activity update
-        elif before.activity != after.activity and after.activity is not None and after.activity.name not in ACTIVITY_IGNORE_LIST:
-            #using main guild channel
-            channel = after.guild.system_channel
+
+        if (
+            before.activity != after.activity and #Activity changed
+            after.activity is not None and        #User is doing smth (Quit a game is an activity for sm reason)
+            after.activity.name not in ACTIVITY_IGNORE_LIST #Check activity for blacklist
+        ):
+            channel = after.guild.system_channel #Send messages to main-channel
             await channel.send(f"{after.mention} ебашит в {after.activity.name}!")
-            #if user , who changed activity in voice channel now
+
+            #If user , who started activity in voice chat
             if after.voice:
-                #choose voice channel with current user
+                #Users voicechat
                 voice_channel = after.voice.channel
-                await channel.send(f"Можешь присоедениться к нему в {voice_channel.mention}")
+
+                #If there is a role for this activity, we will invite everyone(with role) to voice
+                role_to_mention = None
+                for role, game in roles.items():
+                    if game == after.activity.name:
+                        role_to_mention = role
+                        break
+                
+                #If we found role in data/roles
+                if role_to_mention is not None:
+                    await channel.send(f"<@&{role}>, заходите в {voice_channel.mention}")
+
+                
 
 
 #Load cog to bot
