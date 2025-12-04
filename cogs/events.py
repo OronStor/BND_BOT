@@ -14,11 +14,15 @@ class EventsCog(commands.Cog):
     #Notification of changing members`s status offline -> online
     @commands.Cog.listener()
     async def on_presence_update(self, before, after):
-        if before.status == discord.Status.offline and after.status == discord.Status.online:
-            #use main channel if it exists
-            channel = after.guild.system_channel  
-            if channel:
-                await channel.send(f"{after.mention} is online now!")
+        if after.status == discord.Status.online:
+            channel = after.guild.system_channel
+            match before.status:
+                case discord.Status.offline:
+                    await channel.send(f"{after.mention} is online!")
+                case discord.Status.idle:
+                    await channel.send(f"{after.mention} is back!")
+                case discord.Status.do_not_disturb:
+                    await channel.send(f"{after.mention} isn`t busy now!")
 
 
 #Load cog to bot
