@@ -52,13 +52,6 @@ class NotificationCog(commands.Cog):
             mention = f"<@{user_id}>"
             await ctx.send(f"{mention} - {days} days")
 
-    
-
-
-
-
-
-
 
 async def setup(bot):
     await bot.add_cog(NotificationCog(bot))
