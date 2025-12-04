@@ -9,7 +9,7 @@ class NotificationCog(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
 
-    #Sends nearts holidays to guild chat
+    #Sends nearts birthdays to guild chat
     @commands.command()
     async def birthday(self,ctx):
         birthdays = {} #dict: "days_left":"user_id"
@@ -42,14 +42,16 @@ class NotificationCog(commands.Cog):
         amount_to_show = 3
         if amount_to_show > len(birthdays):
             amount_to_show = len(birthdays)
-
+        
+        #sorting list from the nearest to the latest
         nearest_birthdays = sorted(nearest_birthdays)
 
-        for left in nearest_birthdays:
-            user_id = birthdays[str(left)]
+        for i in range(amount_to_show):
+            days = nearest_birthdays[i]
+            user_id = birthdays[str(days)]
             mention = f"<@{user_id}>"
-            await ctx.send(f"{mention} - {left} days")
-
+            await ctx.send(f"{mention} - {days} days")
+        
 
 
 

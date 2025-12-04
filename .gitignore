@@ -1,0 +1,6 @@
+*.log          
+*.tmp          
+*.pyc          
+*.pyo         
+*.env 
+.vscode/

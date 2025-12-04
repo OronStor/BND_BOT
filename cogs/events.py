@@ -11,7 +11,7 @@ class EventsCog(commands.Cog):
         print(f"{member.mention} joined BND!")
 
 
-    #Notification of changing members`s statud offline -> online
+    #Notification of changing members`s status offline -> online
     @commands.Cog.listener()
     async def on_presence_update(self, before, after):
         if before.status == discord.Status.offline and after.status == discord.Status.online:
@@ -19,6 +19,7 @@ class EventsCog(commands.Cog):
             channel = after.guild.system_channel  
             if channel:
                 await channel.send(f"{after.mention} is online now!")
+
 
 #Load cog to bot
 async def setup(bot):
