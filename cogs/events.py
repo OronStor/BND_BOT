@@ -2,6 +2,7 @@
 from discord.ext import commands
 import discord
 from data.roles import roles
+from data.channels import channels
 
 ACTIVITY_IGNORE_LIST = [
     "Visual Studio Code"
@@ -23,8 +24,11 @@ class EventsCog(commands.Cog):
 
         #Checking if its status update
         if after.status == discord.Status.online:
-            #using main guild channel
-            channel = after.guild.system_channel
+
+            #using game activity channel for notification
+            channel_id = int(channels["game_activity"])
+            channel = self.bot.get_channel(channel_id)
+
             #define what status was before changing
             match before.status:
                 case discord.Status.offline:
@@ -40,7 +44,11 @@ class EventsCog(commands.Cog):
             after.activity is not None and        #User is doing smth (Quit a game is an activity for sm reason)
             after.activity.name not in ACTIVITY_IGNORE_LIST #Check activity for blacklist
         ):
-            channel = after.guild.system_channel #Send messages to main-channel
+            
+            #using game activity channel for notific
+            channel_id = int(channels["game_activity"])
+            channel = self.bot.get_channel(channel_id)
+            
             await channel.send(f"{after.mention} ебашит в {after.activity.name}!")
 
             #If user , who started activity in voice chat
