@@ -3,10 +3,7 @@ from discord.ext import commands
 import discord
 from data.roles import roles
 from data.channels import channels
-
-ACTIVITY_IGNORE_LIST = [
-    "Visual Studio Code"
-]
+from data.activity_blacklist import activity_blacklist
 
 class EventsCog(commands.Cog):
     def __init__(self, bot):
@@ -48,7 +45,7 @@ class EventsCog(commands.Cog):
             #using game activity channel for notific
             channel_id = int(channels["game_activity"])
             channel = self.bot.get_channel(channel_id)
-            
+
             await channel.send(f"{after.mention} ебашит в {after.activity.name}!")
 
             #If user , who started activity in voice chat
