@@ -5,7 +5,7 @@ from discord.ext import commands
 from config import settings
 
 #Get bot token from env
-TOKEN = settings.discord_token
+TOKEN = settings.DISCORD_TOKEN
 
 #Supported events
 intents = discord.Intents.default()
@@ -26,5 +26,6 @@ async def on_ready():
     await bot.load_extension("cogs.commands")
     await bot.load_extension("cogs.events")
     await bot.load_extension("cogs.notification")
+    await bot.load_extension("cogs.songs_player")
 
 bot.run(TOKEN)
