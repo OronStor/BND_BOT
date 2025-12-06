@@ -16,7 +16,7 @@ class NotificationCog(commands.Cog):
         nearest_birthdays = [] #list for searching nearest birthdays
         today = date.today() #getting date object
 
-        with open("data/birthday.csv",mode = "r",newline = "",encoding="utf-8") as file:
+        with open("data/guild/birthday.csv",mode = "r",newline = "",encoding="utf-8") as file:
             reader = csv.reader(file)
             header = next(reader) #skips csv header
 
