@@ -1,0 +1,18 @@
+{
+  "symbols": [
+    {"symbol": ":cherries:", "probability": 40},
+    {"symbol": ":lemon:", "probability": 25},
+    {"symbol": ":grapes:", "probability": 25},
+    {"symbol": ":watermelon:", "probability": 14},
+    {"symbol": ":six:", "probability": 1},
+    {"symbol": ":seven:", "probability": 5}
+  ],
+  "multipliers": {
+    ":cherries:": 2,
+    ":lemon:": 3,
+    ":grapes:": 4,
+    ":watermelon:": 5,
+    ":six:": 0,
+    ":seven:": 10
+  }
+}

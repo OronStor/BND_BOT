@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from discord.ext import commands
 import discord
-from data.roles import roles
-from data.channels import channels
-from data.activity_blacklist import activity_blacklist
+from data.guild.roles import roles
+from data.guild.channels import channels
+from data.guild.activity_blacklist import activity_blacklist
 
 class EventsCog(commands.Cog):
     def __init__(self, bot):

@@ -26,5 +26,8 @@ async def on_ready():
     await bot.load_extension("cogs.commands")
     await bot.load_extension("cogs.events")
     await bot.load_extension("cogs.notification")
+    await bot.load_extension("cogs.gamble")
+
+    
 
 bot.run(TOKEN)
