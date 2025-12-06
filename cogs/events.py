@@ -39,7 +39,7 @@ class EventsCog(commands.Cog):
         if (
             before.activity != after.activity and #Activity changed
             after.activity is not None and        #User is doing smth (Quit a game is an activity for sm reason)
-            after.activity.name not in ACTIVITY_IGNORE_LIST #Check activity for blacklist
+            after.activity.name not in activity_blacklist #Check activity for blacklist
         ):
             
             #using game activity channel for notific

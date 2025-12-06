@@ -99,6 +99,11 @@ class GambleCog(commands.Cog):
             return
 
         balance = user_balance[user_id]
+
+        if bet <= 0:
+            await ctx.send(f"Самый умный что-ли? Иди нахуй")
+            return
+
         if bet > balance:
             await ctx.send(f"Вы нищий! Ваш текущий баланс: {balance}💲")
             return
