@@ -1,34 +1,55 @@
-from discord.ext import commands
-import discord
 import csv
 from datetime import date
-import math
-from collections import OrderedDict
+from pathlib import Path
+
+import discord
+from discord.ext import commands
+
+BIRTHDAY_FILE = Path("data/guild/birthday.csv")
+
 
 class NotificationCog(commands.Cog):
-    def __init__(self,bot):
+    """
+    Commands related to notifications and dates.
+    """
+    def __init__(self,bot) -> None:
         self.bot = bot
 
-    #Sends nearts birthdays to guild chat
-    @commands.command()
-    async def birthday(self,ctx):
-        birthdays = {} #dict: "days_left":"user_id"
-        nearest_birthdays = [] #list for searching nearest birthdays
-        today = date.today() #getting date object
+    @commands.command(name = "birthday")
+    async def birthday(
+        self,
+        ctx: commands.Context,
+        amount_to_show: int = 3,
+    ) -> None:
+        """
+        Shows nearest birthdays of guild members
+        
+        CSV format:
+        month, day, user_id
+        """
+        
+        if not BIRTHDAY_FILE.exists():
+            await ctx.send("Birthday file not found.")
+            return
+        
+        birthdays = {} # "days_left":"user_id"
+        nearest_birthdays = [] 
+        today = date.today() 
 
-        with open("data/guild/birthday.csv",mode = "r",newline = "",encoding="utf-8") as file:
+        with BIRTHDAY_FILE.open(
+            mode="r",
+            newline="",
+            encoding="utf-8",
+        ) as file:
             reader = csv.reader(file)
-            header = next(reader) #skips csv header
+            header = next(reader) #skip header
 
             for row in reader:
-                """
-                csv file format:
-                month, day, id
-                "06", "10", "123123123123"
-                """
-                current_date = date.fromisoformat(f"{today.year}-{row[0]}-{row[1]}")
+                current_date = date.fromisoformat(
+                    f"{today.year}-{row[0]}-{row[1]}"
+                )
 
-                #if birthday already was in this year -> find days_left to next
+                #if birthday already was in this year -> search in next year
                 if today > current_date:
                     current_date = current_date.replace(year = today.year + 1)
 
@@ -38,20 +59,21 @@ class NotificationCog(commands.Cog):
                 nearest_birthdays.append(days_left)
                 birthdays[str(days_left)] = row[2]
 
-        #if you want to show more birthdays than we have in birthday.csv -> show all in birthday.csv
-        amount_to_show = 3
+        #if you want to show more than we have in file -> show all in file
         if amount_to_show > len(birthdays):
             amount_to_show = len(birthdays)
         
-        #sorting list from the nearest to the latest
         nearest_birthdays = sorted(nearest_birthdays)
-
+        result_lines = []
         for i in range(amount_to_show):
             days = nearest_birthdays[i]
             user_id = birthdays[str(days)]
             mention = f"<@{user_id}>"
-            await ctx.send(f"{mention} - {days} days")
+            result_lines.append(f"{mention} - {days} days")
+            
+        await ctx.send("\n".join(result_lines))
 
 
-async def setup(bot):
+async def setup(bot) -> None:
+    """Register NotificationCog in the bot"""
     await bot.add_cog(NotificationCog(bot))
