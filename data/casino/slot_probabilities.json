@@ -1,0 +1,35 @@
+{
+  "symbols": [
+    {"symbol": ":cherries:", "probability": 22},
+    {"symbol": ":lemon:", "probability": 18},
+    {"symbol": ":grapes:", "probability": 15},
+    {"symbol": ":tangerine:", "probability": 12},
+    {"symbol": ":watermelon:", "probability": 8},
+    {"symbol": ":strawberry:", "probability": 7},
+
+    {"symbol": ":banana:", "probability": 6},
+    {"symbol": ":pineapple:", "probability": 5},
+    {"symbol": ":peach:", "probability": 4},
+
+    {"symbol": ":six:", "probability": 1},
+    {"symbol": ":seven:", "probability": 1},
+    {"symbol": ":gem:", "probability": 1}
+  ],
+
+  "multipliers": {
+    ":cherries:": 1.5,
+    ":lemon:": 1.7,
+    ":grapes:": 2,
+    ":tangerine:": 2.5,
+    ":watermelon:": 4,
+    ":strawberry:": 5,
+
+    ":banana:": 8,
+    ":pineapple:": 12,
+    ":peach:": 15,
+
+    ":six:": 0.5,
+    ":seven:": 40,
+    ":gem:": 100
+  }
+}

@@ -1,11 +1,17 @@
-# -*- coding: utf-8 -*-
+import logging
+
 import discord
 from discord.ext import commands
 
 from config import settings
 
-#Get bot token from env
 TOKEN = settings.discord_token
+log = logging.getLogger(__name__)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s",
+)
 
 #Supported events
 intents = discord.Intents.default()
@@ -14,17 +20,15 @@ intents.members = True
 intents.guild_messages = True
 intents.presences = True
 
-#Creating an object of class Bot
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-#Running on start
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}")
-
-    #Load cogs
+    log.info(f"Logged in as {bot.user}")
     await bot.load_extension("cogs.commands")
     await bot.load_extension("cogs.events")
     await bot.load_extension("cogs.notification")
+    await bot.load_extension("cogs.gamble")
 
+    
 bot.run(TOKEN)
