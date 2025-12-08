@@ -39,9 +39,7 @@ class EventsCog(commands.Cog):
         channel = self.bot.get_channel(game_channel_id)
 
         if channel is None:
-            log.warning(
-                "Game activity channel with id %s not found.", game_channel_id
-            )
+            log.warning("Game activity channel with id %s not found.", game_channel_id)
             return
 
         # --- Status online ---
@@ -57,13 +55,13 @@ class EventsCog(commands.Cog):
         # --- Game activity ---
         if (
             before.activity != after.activity
-            and after.activity is not None 
+            # ТЕСТОВАЯ СТРОКА ДЛЯ ОБХОДА СТАТУСОВ
+            and before.activity is None
+            and after.activity is not None
             and after.activity.name not in activity_blacklist
         ):
             activity_name = after.activity.name
-            await channel.send(
-                f"{after.mention} is playing {activity_name}!"
-            )
+            await channel.send(f"{after.mention} is playing {activity_name}!")
 
             # Invite others with role if user in voice
             if after.voice and after.voice.channel:
@@ -77,8 +75,7 @@ class EventsCog(commands.Cog):
 
                 if role_to_mention is not None:
                     await channel.send(
-                        f"<@&{role_to_mention}>, Enter "
-                        f"{voice_channel.mention}"
+                        f"<@&{role_to_mention}>, Enter {voice_channel.mention}"
                     )
 
 

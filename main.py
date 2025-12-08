@@ -13,14 +13,15 @@ logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s",
 )
 
-#Supported events
+# Supported events
 intents = discord.Intents.default()
-intents.message_content = True  
+intents.message_content = True
 intents.members = True
 intents.guild_messages = True
 intents.presences = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+
 
 @bot.event
 async def on_ready():
@@ -30,5 +31,5 @@ async def on_ready():
     await bot.load_extension("cogs.notification")
     await bot.load_extension("cogs.gamble")
 
-    
+
 bot.run(TOKEN)

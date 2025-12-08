@@ -1,5 +1,2 @@
-#list of games , which bot ignores while parsing
-activity_blacklist = [
-    "Visual Studio Code",
-    "Spotify"
-]
+# list of games , which bot ignores while parsing
+activity_blacklist = ["Visual Studio Code", "Spotify"]

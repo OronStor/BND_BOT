@@ -26,9 +26,7 @@ class CommandsCog(commands.Cog):
     @commands.command(name="feet")
     async def feet(self, ctx: commands.Context) -> None:
         """Asks user a weird question (fun)"""
-        await ctx.send(
-            f"Hey, {ctx.author.mention}... Can I smell your feet??"
-        )
+        await ctx.send(f"Hey, {ctx.author.mention}... Can I smell your feet??")
 
     @commands.command(name="silver")
     async def silver(self, ctx: commands.Context) -> None:
@@ -44,4 +42,3 @@ class CommandsCog(commands.Cog):
 async def setup(bot: commands.Bot):
     """Register CommandsCog in the bot"""
     await bot.add_cog(CommandsCog(bot))
-

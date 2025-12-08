@@ -10,24 +10,26 @@ from discord.ext import commands
 
 log = logging.getLogger(__name__)
 
-BALANCE_FILE = Path('data/casino/user_balances.json')
-PROBABILITY_FILE = Path('data/casino/slot_probabilities.json')
-DAILY_FILE = Path('data/casino/daily.json')
+BALANCE_FILE = Path("data/casino/user_balances.json")
+PROBABILITY_FILE = Path("data/casino/slot_probabilities.json")
+DAILY_FILE = Path("data/casino/daily.json")
 START_BALANCE = 1000
 DAILY_REWARD = 2000
-SLOT_SIZE = 3   
-SPIN_COUNT = 3  #amount of spins before final
-SPIN_DELAY = 0.3 
+SLOT_SIZE = 3
+SPIN_COUNT = 3  # amount of spins before final
+SPIN_DELAY = 0.3
+
 
 class GambleCog(commands.Cog):
     """Cog with casino logics : registration and slot-machine"""
+
     def __init__(self, bot):
         self.bot = bot
         self.symbols, self.probabilities, self.multipliers = self.load_probabilities()
-        self.active_player = None 
+        self.active_player = None
 
     def load_balances(self) -> dict:
-        """Load balances from json file to dict"""        
+        """Load balances from json file to dict"""
         try:
             with open(BALANCE_FILE) as f:
                 content = f.read().strip()
@@ -35,10 +37,10 @@ class GambleCog(commands.Cog):
         except FileNotFoundError:
             log.warning("Error: File with users balances not found")
             return {}
-    
+
     def save_balances(self, balances) -> None:
         """Save balances to json file"""
-        with open(BALANCE_FILE, 'w') as f:
+        with open(BALANCE_FILE, "w") as f:
             json.dump(balances, f, indent=4)
 
     def load_daily(self) -> dict:
@@ -49,110 +51,100 @@ class GambleCog(commands.Cog):
         except FileNotFoundError:
             log.warning("Error: File with users daily not found")
             return {}
-    
+
     def save_daily(self, daily) -> None:
         """Save date of last daily to file"""
-        with open(DAILY_FILE, 'w') as f:
-            json.dump(daily,f,indent=4)
-    
+        with open(DAILY_FILE, "w") as f:
+            json.dump(daily, f, indent=4)
+
     @commands.command(name="register")
     async def register(self, ctx) -> None:
-        """Add user data to balances json with start balance"""        
+        """Add user data to balances json with start balance"""
         user_id = str(ctx.author.id)
         user_balance = self.load_balances()
 
         if user_id in user_balance:
             balance = user_balance[user_id]
-            await ctx.send(
-                f"You are already registered! Current balance : {balance}💲"
-            )
+            await ctx.send(f"You are already registered! Current balance : {balance}💲")
         else:
             user_balance[user_id] = START_BALANCE
             self.save_balances(user_balance)
             await ctx.send(
                 f"Congrats, {ctx.author}! Your start balance: {START_BALANCE}💲."
             )
-            
+
     @commands.command(name="leaderboard")
-    async def leaderboard(
-        self,ctx,amount_to_show:int = 5
-        ) -> None:
+    async def leaderboard(self, ctx, amount_to_show: int = 5) -> None:
         """Shows users with biggest amount of tokens"""
         user_balances = self.load_balances()
-        rating = sorted(
-                    user_balances.items(),
-                    key=lambda item: item[1],
-                    reverse=True
-                    )[:amount_to_show]
-        
+        rating = sorted(user_balances.items(), key=lambda item: item[1], reverse=True)[
+            :amount_to_show
+        ]
+
         medals = ["🥇", "🥈", "🥉"]
         embed = discord.Embed(
-        title="🏆 Best casino player:",
-        description="Richest in BND:",
-        color=discord.Color.gold()
+            title="🏆 Best casino player:",
+            description="Richest in BND:",
+            color=discord.Color.gold(),
         )
         position = 0
         for player in rating:
-            position+=1
+            position += 1
             if position <= 3:
                 place_marker = medals[position - 1]
             else:
                 place_marker = f"#{position}"
-                
+
             user_id = int(player[0])
             member = ctx.guild.get_member(user_id)
             balance = player[1]
-            
+
             embed.add_field(
-            name=f"{place_marker} {member.name}",
-            value=f"{member.mention}\nБаланс: **{balance}💲**",
-            inline=False,
-        )
+                name=f"{place_marker} {member.name}",
+                value=f"{member.mention}\nБаланс: **{balance}💲**",
+                inline=False,
+            )
         top_user = ctx.guild.get_member(int(rating[0][0]))
         if top_user:
             embed.set_thumbnail(url=top_user.display_avatar.url)
-             
+
         await ctx.send(embed=embed)
-        
+
     @commands.command(name="daily")
-    async def daily(self,ctx):
+    async def daily(self, ctx):
         """Daily tokens once per day"""
         user_id = str(ctx.author.id)
         balances = self.load_balances()
-        
+
         if user_id not in balances:
             await ctx.send("Use `!register` first to play!")
             return
-        
+
         daily_claims = self.load_daily()
         today = date.today().isoformat()
         last_claim = daily_claims.get(user_id)
-        
+
         if last_claim == today:
             await ctx.send("You have already claimed your daily")
             return
-        
+
         balances[user_id] += DAILY_REWARD
         daily_claims[user_id] = today
-        
+
         self.save_balances(balances)
         self.save_daily(daily_claims)
-        
-        await ctx.send(f"{ctx.author.mention} claimed {DAILY_REWARD}!")
-        
-        
-        
-        
 
-    #===========СЛОТЫ============
+        await ctx.send(f"{ctx.author.mention} claimed {DAILY_REWARD}!")
+
+    # ===========СЛОТЫ============
 
     def load_probabilities(self) -> tuple[list[str], list[int], dict]:
         """Load symbols, probabilities, multipliers from json"""
         with open(PROBABILITY_FILE) as f:
             data = json.load(f)
-            symbols = [item['symbol'] for item in data['symbols']]
-            probabilities = [item['probability'] for item in data['symbols']]
-            multipliers = data['multipliers']
+            symbols = [item["symbol"] for item in data["symbols"]]
+            probabilities = [item["probability"] for item in data["symbols"]]
+            multipliers = data["multipliers"]
             return symbols, probabilities, multipliers
 
     def weighted_random(self) -> str:
@@ -168,7 +160,7 @@ class GambleCog(commands.Cog):
     def check_winning_lines(self, slot) -> list[list[str]]:
         """Return a list with lines , where all symbols are the same"""
         winning_lines = []
-        
+
         # Horizontal lines
         for row in slot:
             if len(set(row)) == 1:  # All symbols are same
@@ -190,14 +182,14 @@ class GambleCog(commands.Cog):
 
         return winning_lines
 
-    @commands.command(name = "slots")
+    @commands.command(name="slots")
     async def slots(self, ctx, bet: int) -> None:
         """Play slots with specified bet"""
-        
-        #Check if someone playing now
+
+        # Check if someone playing now
         if self.active_player is not None:
             return
-        
+
         self.active_player = True
         try:
             user_id = str(ctx.author.id)
@@ -223,9 +215,9 @@ class GambleCog(commands.Cog):
             for _ in range(SPIN_COUNT):
                 slot = self.generate_slot()
                 slot_display = "\n".join([" | ".join(row) for row in slot])
-                #Use message.edit to visualize spinning
+                # Use message.edit to visualize spinning
                 await slot_message.edit(content=f"{slot_display}")
-                await asyncio.sleep(SPIN_DELAY) 
+                await asyncio.sleep(SPIN_DELAY)
 
             # Final grid
             final_slot = self.generate_slot()
