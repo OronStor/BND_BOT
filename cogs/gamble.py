@@ -1,3 +1,4 @@
+from datetime import date
 import random
 import logging
 import asyncio
@@ -11,8 +12,10 @@ log = logging.getLogger(__name__)
 
 BALANCE_FILE = Path('data/casino/user_balances.json')
 PROBABILITY_FILE = Path('data/casino/slot_probabilities.json')
+DAILY_FILE = Path('data/casino/daily.json')
 START_BALANCE = 1000
-SLOT_SIZE = 3   #size of slot-machine
+DAILY_REWARD = 2000
+SLOT_SIZE = 3   
 SPIN_COUNT = 3  #amount of spins before final
 SPIN_DELAY = 0.3 
 
@@ -38,6 +41,20 @@ class GambleCog(commands.Cog):
         with open(BALANCE_FILE, 'w') as f:
             json.dump(balances, f, indent=4)
 
+    def load_daily(self) -> dict:
+        try:
+            with open(DAILY_FILE) as f:
+                content = f.read().strip()
+                return json.loads(content)
+        except FileNotFoundError:
+            log.warning("Error: File with users daily not found")
+            return {}
+    
+    def save_daily(self, daily) -> None:
+        """Save date of last daily to file"""
+        with open(DAILY_FILE, 'w') as f:
+            json.dump(daily,f,indent=4)
+    
     @commands.command(name="register")
     async def register(self, ctx) -> None:
         """Add user data to balances json with start balance"""        
@@ -96,6 +113,35 @@ class GambleCog(commands.Cog):
             embed.set_thumbnail(url=top_user.display_avatar.url)
              
         await ctx.send(embed=embed)
+        
+    @commands.command(name="daily")
+    async def daily(self,ctx):
+        """Daily tokens once per day"""
+        user_id = str(ctx.author.id)
+        balances = self.load_balances()
+        
+        if user_id not in balances:
+            await ctx.send("Use `!register` first to play!")
+            return
+        
+        daily_claims = self.load_daily()
+        today = date.today().isoformat()
+        last_claim = daily_claims.get(user_id)
+        
+        if last_claim == today:
+            await ctx.send("You have already claimed your daily")
+            return
+        
+        balances[user_id] += DAILY_REWARD
+        daily_claims[user_id] = today
+        
+        self.save_balances(balances)
+        self.save_daily(daily_claims)
+        
+        await ctx.send(f"{ctx.author.mention} claimed {DAILY_REWARD}!")
+        
+        
+        
         
 
     #===========СЛОТЫ============
