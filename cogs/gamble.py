@@ -55,6 +55,48 @@ class GambleCog(commands.Cog):
             await ctx.send(
                 f"Congrats, {ctx.author}! Your start balance: {START_BALANCE}💲."
             )
+            
+    @commands.command(name="leaderboard")
+    async def leaderboard(
+        self,ctx,amount_to_show:int = 5
+        ) -> None:
+        """Shows users with biggest amount of tokens"""
+        user_balances = self.load_balances()
+        rating = sorted(
+                    user_balances.items(),
+                    key=lambda item: item[1],
+                    reverse=True
+                    )[:amount_to_show]
+        
+        medals = ["🥇", "🥈", "🥉"]
+        embed = discord.Embed(
+        title="🏆 Best casino player:",
+        description="Richest in BND:",
+        color=discord.Color.gold()
+        )
+        position = 0
+        for player in rating:
+            position+=1
+            if position <= 3:
+                place_marker = medals[position - 1]
+            else:
+                place_marker = f"#{position}"
+                
+            user_id = int(player[0])
+            member = ctx.guild.get_member(user_id)
+            balance = player[1]
+            
+            embed.add_field(
+            name=f"{place_marker} {member.name}",
+            value=f"{member.mention}\nБаланс: **{balance}💲**",
+            inline=False,
+        )
+        top_user = ctx.guild.get_member(int(rating[0][0]))
+        if top_user:
+            embed.set_thumbnail(url=top_user.display_avatar.url)
+             
+        await ctx.send(embed=embed)
+        
 
     #===========СЛОТЫ============
 
@@ -123,7 +165,7 @@ class GambleCog(commands.Cog):
             balance = user_balance[user_id]
 
             if bet <= 0:
-                await ctx.send(f"Not enough tokens to play")
+                await ctx.send("Not enough tokens to play")
                 return
 
             if bet > balance:
