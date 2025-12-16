@@ -1,5 +1,6 @@
 from datetime import date
 import random
+import re
 import logging
 import asyncio
 import json
@@ -56,6 +57,25 @@ class GambleCog(commands.Cog):
         """Save date of last daily to file"""
         with open(DAILY_FILE, "w") as f:
             json.dump(daily, f, indent=4)
+
+    @commands.command(name="balance")
+    async def balance(self,ctx,mention: str=None) -> None:
+        if mention is None:
+            user_id = str(ctx.author.id)
+        else:
+            match = re.match(r'<@!?(\d+)>', mention)
+            if match:
+                user_id = match.group(1)
+            else:
+                await ctx.send("Error : can`t find user")
+        balances = self.load_balances()
+        guild = ctx.guild
+        user = await guild.fetch_member(user_id)
+        user_balance = balances[user_id]
+        if user_balance is None:
+            await ctx.send(f"{user.mention} is not registered!")
+        else:
+            await ctx.send(f"{user.mention} balance is {balances[user_id]}")
 
     @commands.command(name="register")
     async def register(self, ctx) -> None:
@@ -135,8 +155,6 @@ class GambleCog(commands.Cog):
         self.save_daily(daily_claims)
 
         await ctx.send(f"{ctx.author.mention} claimed {DAILY_REWARD}!")
-
-    # ===========СЛОТЫ============
 
     def load_probabilities(self) -> tuple[list[str], list[int], dict]:
         """Load symbols, probabilities, multipliers from json"""
@@ -235,7 +253,7 @@ class GambleCog(commands.Cog):
                 for line in winning_lines:
                     symbol = line[0]
                     multiplier = self.multipliers.get(symbol, 1)
-                    winnings += bet * multiplier
+                    winnings += int(bet * multiplier)
                     result_lines.append(" | ".join(line))
 
                 user_balance[user_id] += winnings
