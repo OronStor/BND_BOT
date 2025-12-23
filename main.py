@@ -5,7 +5,7 @@ from discord.ext import commands
 
 from config import settings
 
-TOKEN = settings.discord_token
+TOKEN = settings.DISCORD_TOKEN
 log = logging.getLogger(__name__)
 
 logging.basicConfig(
@@ -30,6 +30,7 @@ async def on_ready():
     await bot.load_extension("cogs.events")
     await bot.load_extension("cogs.notification")
     await bot.load_extension("cogs.gamble")
+    await bot.load_extension("cogs.steam_free_games")
 
 
 bot.run(TOKEN)

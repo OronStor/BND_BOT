@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
-    discord_token: str
+    DISCORD_TOKEN: str
 
 
 settings = Settings()
