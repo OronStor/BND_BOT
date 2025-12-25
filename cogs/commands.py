@@ -37,7 +37,19 @@ class CommandsCog(commands.Cog):
 
         selected_image = random.choice(self.silver_images)
         await ctx.send(file=discord.File(selected_image))
-
+        
+    @commands.command(name ="command")
+    async def command(self,ctx) -> None:
+        await ctx.send("""
+                         **Commands:**
+                         `!silvername` - отправляет случайную картинку с пукичем
+                         `!feet` - спрашивает, можно ли понюхать 
+                         `!register` - регистрирует вас в казике
+                         `!slots {ставка}` - игра в слоты
+                         `!birthday {кол-во}` - показывает ближайшие дни рождения
+                         `!leaderboard` - показывает самых богатых на сервере
+                       """)
+    
 
 async def setup(bot: commands.Bot):
     """Register CommandsCog in the bot"""
