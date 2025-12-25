@@ -20,7 +20,7 @@ class EventsCog(commands.Cog):
     async def on_member_join(self, member: discord.Member) -> None:
         """Send a welcome log message when a member joins."""
         log.info("%s joined the server.", member)
-
+      
     @commands.Cog.listener()
     async def on_presence_update(
         self,
@@ -53,31 +53,27 @@ class EventsCog(commands.Cog):
                     await channel.send(f"{after.mention} isn’t busy now!")
 
         # --- Game activity ---
-        if (
-            before.activity != after.activity
-            # ТЕСТОВАЯ СТРОКА ДЛЯ ОБХОДА СТАТУСОВ
-            and before.activity is None
-            and after.activity is not None
-            and after.activity.name not in activity_blacklist
-        ):
-            activity_name = after.activity.name
-            await channel.send(f"{after.mention} is playing {activity_name}!")
-
-            # Invite others with role if user in voice
-            if after.voice and after.voice.channel:
+        if before.activity != after.activity and after.activity:
+            if after.activity.type == discord.ActivityType.playing:
+                await channel.send(f'{after.mention} теперь играет в {after.activity.name}')
+            elif after.activity.type == discord.ActivityType.streaming:
+                await channel.send(f'{after.mention} стримит: {after.activity.name}')
+                
+            if after.voice:
+                log.info(after.voice)
                 voice_channel = after.voice.channel
 
-                role_to_mention: str | None = None
+                role_to_mention = None
                 for role_id, game_name in roles.items():
-                    if game_name == activity_name:
+                    log.info(after.name.lower())
+                    if game_name.lower() == after.activity.name.lower():
                         role_to_mention = role_id
+                        log.info("НАШЕЛ")
                         break
 
                 if role_to_mention is not None:
-                    await channel.send(
-                        f"<@&{role_to_mention}>, Enter {voice_channel.mention}"
-                    )
-
+                    await channel.send(f"<@&{role_to_mention}>, заходите в {voice_channel.mention}")
+                
 
 async def setup(bot: commands.Bot) -> None:
     """Register EventsCog in the bot."""
