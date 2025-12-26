@@ -1,67 +1,80 @@
-# -*- coding: utf-8 -*-
-from discord.ext import commands
-import discord
-from data.roles import roles
+import logging
 
-ACTIVITY_IGNORE_LIST = [
-    "Visual Studio Code"
-]
+import discord
+from discord.ext import commands
+
+from data.guild.activity_blacklist import activity_blacklist
+from data.guild.channels import channels
+from data.guild.roles import roles
+
+log = logging.getLogger(__name__)
+
 
 class EventsCog(commands.Cog):
-    def __init__(self, bot):
+    """Server events: welcome messages, status and activity notifications."""
+
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    #Welcome message for new member on server
     @commands.Cog.listener()
-    async def on_member_join(self, member):
-        print(f"{member.mention} joined BND!")
-
-
-    #Notification of changing members`s status offline/idle/busy -> online
+    async def on_member_join(self, member: discord.Member) -> None:
+        """Send a welcome log message when a member joins."""
+        log.info("%s joined the server.", member)
+      
     @commands.Cog.listener()
-    async def on_presence_update(self, before, after):
+    async def on_presence_update(
+        self,
+        before: discord.Member,
+        after: discord.Member,
+    ) -> None:
+        """
+        Notify when:
+        - Status switched to online;
+        - Game activity changed and not in blacklist.
+        Invite others when:
+        -There is a role for this game
+        -Player in voice chat
+        """
+        game_channel_id = int(channels["game_activity"])
+        channel = self.bot.get_channel(game_channel_id)
 
-        #Checking if its status update
+        if channel is None:
+            log.warning("Game activity channel with id %s not found.", game_channel_id)
+            return
+
+        # --- Status online ---
         if after.status == discord.Status.online:
-            #using main guild channel
-            channel = after.guild.system_channel
-            #define what status was before changing
             match before.status:
                 case discord.Status.offline:
                     await channel.send(f"{after.mention} is online!")
                 case discord.Status.idle:
                     await channel.send(f"{after.mention} is back!")
                 case discord.Status.do_not_disturb:
-                    await channel.send(f"{after.mention} isn`t busy now!")
+                    await channel.send(f"{after.mention} isn’t busy now!")
 
-
-        if (
-            before.activity != after.activity and #Activity changed
-            after.activity is not None and        #User is doing smth (Quit a game is an activity for sm reason)
-            after.activity.name not in ACTIVITY_IGNORE_LIST #Check activity for blacklist
-        ):
-            channel = after.guild.system_channel #Send messages to main-channel
-            await channel.send(f"{after.mention} ебашит в {after.activity.name}!")
-
-            #If user , who started activity in voice chat
+        # --- Game activity ---
+        if before.activity != after.activity and after.activity:
+            if after.activity.type == discord.ActivityType.playing:
+                await channel.send(f'{after.mention} теперь играет в {after.activity.name}')
+            elif after.activity.type == discord.ActivityType.streaming:
+                await channel.send(f'{after.mention} стримит: {after.activity.name}')
+                
             if after.voice:
-                #Users voicechat
+                log.info(after.voice)
                 voice_channel = after.voice.channel
 
-                #If there is a role for this activity, we will invite everyone(with role) to voice
                 role_to_mention = None
-                for role, game in roles.items():
-                    if game == after.activity.name:
-                        role_to_mention = role
+                for role_id, game_name in roles.items():
+                    log.info(after.name.lower())
+                    if game_name.lower() == after.activity.name.lower():
+                        role_to_mention = role_id
+                        log.info("НАШЕЛ")
                         break
-                
-                #If we found role in data/roles
+
                 if role_to_mention is not None:
-                    await channel.send(f"<@&{role}>, заходите в {voice_channel.mention}")
-
+                    await channel.send(f"<@&{role_to_mention}>, заходите в {voice_channel.mention}")
                 
 
-
-#Load cog to bot
-async def setup(bot):
+async def setup(bot: commands.Bot) -> None:
+    """Register EventsCog in the bot."""
     await bot.add_cog(EventsCog(bot))

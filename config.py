@@ -6,4 +6,5 @@ class Settings(BaseSettings):
 
     discord_token: str
 
+
 settings = Settings()
