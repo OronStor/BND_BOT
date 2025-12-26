@@ -53,7 +53,7 @@ class EventsCog(commands.Cog):
                     await channel.send(f"{after.mention} isn’t busy now!")
 
         # --- Game activity ---
-        if before.activity != after.activity and after.activity:
+        if before.activity != after.activity and after.activity and after.activity.name.lower() not in [name.lower() for name in activity_blacklist]:
             if after.activity.type == discord.ActivityType.playing:
                 await channel.send(f'{after.mention} теперь играет в {after.activity.name}')
             elif after.activity.type == discord.ActivityType.streaming:
