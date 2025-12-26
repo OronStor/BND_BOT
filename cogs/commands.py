@@ -1,33 +1,57 @@
-from discord.ext import commands
-import discord
+import logging
 import random
 from pathlib import Path
 
+import discord
+from discord.ext import commands
+
+log = logging.getLogger(__name__)
+
+
 class CommandsCog(commands.Cog):
-    def __init__(self, bot):
+    """Cog with simple fun commands like sending random images."""
+
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    #get paths from silvername/
-    silver_path = Path("data/silvername")
-    silvername_pictures = [f for f in silver_path.iterdir() if f.is_file()]
+        # Load images from silvername folder
+        self.silver_path = Path("data/silvername")
+        self.silver_images = [
+            file for file in self.silver_path.iterdir() if file.is_file()
+        ]
 
-    #Asks user to smell their feet
-    @commands.command()
-    async def feet(self, ctx):
-        await ctx.send(f"Hey, {ctx.author.mention}... Can i smell your feet??")
+        if not self.silver_images:
+            log.warning("No images found in data/silvername/")
 
+    @commands.command(name="feet")
+    async def feet(self, ctx: commands.Context) -> None:
+        """Asks user a weird question (fun)"""
+        await ctx.send(f"Hey, {ctx.author.mention}... Can I smell your feet??")
 
-    #Send random picture from data/silvername/
-    @commands.command()
-    async def silver(self, ctx):
-        #Getting random number from 1 to number of files in data/silvername/
-        ordinal_number = random.randint(1,len(self.silvername_pictures)-1)
-        #Get path for picture with ordinal_number
-        current_path = str(self.silvername_pictures[ordinal_number])
-        print(current_path)
-        await ctx.send(file=discord.File(current_path))
+    @commands.command(name="silver")
+    async def silver(self, ctx: commands.Context) -> None:
+        """Send a random image from the silvername folder."""
+        if not self.silver_images:
+            await ctx.send("No images found in the silvername folder.")
+            return
 
+        selected_image = random.choice(self.silver_images)
+        await ctx.send(file=discord.File(selected_image))
+        
+    @commands.command(name ="command")
+    async def command(self,ctx) -> None:
+        await ctx.send("""
+                         **Commands:**
+                         `!silvername` - отправляет случайную картинку с пукичем
+                         `!feet` - спрашивает, можно ли понюхать 
+                         `!register` - регистрирует вас в казике
+                         `!slots {ставка}` - игра в слоты
+                         `!birthday {кол-во}` - показывает ближайшие дни рождения
+                         `!leaderboard` - показывает самых богатых на сервере
+                         `!daily` - ежедневный бонус
+                       """)
+    
 
-#Load cog to bot
-async def setup(bot):
+async def setup(bot: commands.Bot):
+    """Register CommandsCog in the bot"""
     await bot.add_cog(CommandsCog(bot))
