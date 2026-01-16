@@ -46,7 +46,7 @@ class CommandsCog(commands.Cog):
         await ctx.send("""
                          **Commands:**
                          `!silver` - send random image with famous streamer
-                         '!balance {user}' - shows user balance (by default - your)
+                         `!balance {user}` - shows user balance (by default - yours)
                          `!feet` - weird question
                          `!register` - register you in casino
                          `!slots {bet}` - gamble
