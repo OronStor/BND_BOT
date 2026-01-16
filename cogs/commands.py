@@ -45,14 +45,14 @@ class CommandsCog(commands.Cog):
     async def command(self,ctx) -> None:
         await ctx.send("""
                          **Commands:**
-                         `!silver` - отправляет случайную картинку с пукичем
-                         '!balance {user}' - показывает баланс пользователя (по умолчанию - твой)
-                         `!feet` - спрашивает, можно ли понюхать 
-                         `!register` - регистрирует вас в казике
-                         `!slots {ставка}` - игра в слоты
-                         `!birthday {кол-во}` - показывает ближайшие дни рождения
-                         `!leaderboard` - показывает самых богатых на сервере
-                         `!daily` - ежедневный бонус
+                         `!silver` - send random image with famous streamer
+                         '!balance {user}' - shows user balance (by default - your)
+                         `!feet` - weird question
+                         `!register` - register you in casino
+                         `!slots {bet}` - gamble
+                         `!birthday {кол-во}` - shows nearest birthdays
+                         `!leaderboard` - Richest people on server
+                         `!daily` - daily bonus in casino
                        """)
     
 
