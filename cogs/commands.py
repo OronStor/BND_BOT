@@ -14,14 +14,17 @@ class CommandsCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-        # Load images from silvername folder
+        # Load images from silvername folder if it exists
         self.silver_path = Path("data/silvername")
-        self.silver_images = [
-            file for file in self.silver_path.iterdir() if file.is_file()
-        ]
+        if self.silver_path.is_dir():
+            
+            self.silver_images = [
+                file for file in self.silver_path.iterdir() if file.is_file()
+            ]
 
-        if not self.silver_images:
-            log.warning("No images found in data/silvername/")
+        else:
+            log.warning("Silvername directory not found!")
+            self.silver_images = []
 
     @commands.command(name="feet")
     async def feet(self, ctx: commands.Context) -> None:
@@ -42,7 +45,8 @@ class CommandsCog(commands.Cog):
     async def command(self,ctx) -> None:
         await ctx.send("""
                          **Commands:**
-                         `!silvername` - отправляет случайную картинку с пукичем
+                         `!silver` - отправляет случайную картинку с пукичем
+                         '!balance {user}' - показывает баланс пользователя (по умолчанию - твой)
                          `!feet` - спрашивает, можно ли понюхать 
                          `!register` - регистрирует вас в казике
                          `!slots {ставка}` - игра в слоты
