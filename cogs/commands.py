@@ -47,7 +47,6 @@ class CommandsCog(commands.Cog):
                          **Commands:**
                          `!silver` - send random image with famous streamer
                          `!balance {user}` - shows user balance (by default - yours)
-                         `!feet` - weird question
                          `!register` - register you in casino
                          `!slots {bet}` - gamble
                          `!birthday {кол-во}` - shows nearest birthdays
