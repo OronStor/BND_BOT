@@ -1,100 +1,55 @@
-Discord Casino Bot
+# BND Discord Bot
+> A modular and interactive Discord bot featuring automated media delivery, a gambling system, and robust server monitoring.
 
-Добро пожаловать в Discord Casino Bot — бота для твоего Discord-сервера, который предоставляет набор команд для игры в казино, отслеживания баланса, ежедневных бонусов и многого другого!
+## 📝 Description
+This project is the final project for **Harvard's CS50P (Introduction to Programming with Python)**. 
 
-🚀 Возможности бота:
+The **BND Bot** is a discord entertaiment bot with several types of fun and useful functions which you can use 
+while hanging out with players!
 
-🎰 Слот-машина с шансами на выигрыш.
+Key technical challenges addressed in this project include:
+* **Asynchronous Programming:** Managing multiple concurrent events and commands.
+* **Modular Design:** Utilizing Discord "Cogs" to keep the codebase maintainable.
 
-💸 Ежедневные бонусы для всех игроков.
+## 📂 Project Structure
 
-🏆 Таблица лидеров с самыми богатыми игроками.
+* `project.py`: Entry point. Contains the `main()` function and core utility functions required by the CS50.
+* `test_project.py`: Tests for functions in `project.py`.
+* `cogs/`: A directory with extensions:
+    * `commands.py`: Text user commands (with prefix !).
+    * `events.py`: Handles Discord events like member joins and status changes.
+    * `gamble.py`: Contains the logic for the casino/gambling system.
+    * `notification.py`: Manages automated server notifications.
+* `data/`: Local storage for media files and files with users info
+* `config.py`: Stores important info (not included in the repository for security).
+* `requirements.txt`: Libraries needed to run the project.
 
-📅 Уведомления о днях рождения на сервере.
+P.S: I was foced to rebuild project due to CS50 requirements , u can check main branch to see actual version of bot
 
-📜 Как установить:
+## 🛠️ Installation & Usage
 
-Клонируйте репозиторий на свою машину:
+### Prerequisites
+* Python 3.14
+* A Discord token from (https://discord.com/developers/applications).
 
-git clone https://github.com/yourusername/discord-casino-bot.git
-cd discord-casino-bot
+### Setup
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/BND_BOT.git](https://github.com/OronStor/BND_BOT.git)
+   cd BND_BOT
 
+2. **Depends** 
+    pip install -r requirements.txt
 
-Установите все зависимости:
+3. **Config file**
+    Make sure u have config.py in ur root folder with token in it!
+    Also u can see some configure files in /data folder, make sure it suits to ur server!
 
-pip install -r requirements.txt
+4. **Run bot**
+    ```bash
+    python project.py
 
+5. **Tests**
+    Just run python -m pytest
 
-Настройте ваш config.py:
-
-Создайте файл config.py в корне проекта.
-
-Получите токен вашего бота в Discord Developer Portal
-
-Пример конфигурации:
-
-import os
-
-class Settings:
-    discord_token = os.getenv("DISCORD_TOKEN", "your-bot-token-here")
-    logging_level = "INFO"
-
-settings = Settings()
-
-
-Запустите бота:
-
-python main.py
-
-
-Пригласите бота на ваш сервер, используя ссылку, которую можно создать через OAuth2 URL Generator
-, выбрав нужные права.
-
-💬 Основные команды:
-🎰 Слот-машина
-
-!slots <сумма> — играйте на слот-машине с выбранной ставкой. Выиграйте монеты или потеряйте их!
-
-Пример: !slots 100
-
-💸 Ежедневный бонус
-
-!daily — получите ежедневный бонус в размере 250💲. Один раз в сутки.
-
-Пример: !daily
-
-🏆 Таблица лидеров
-
-!leaderboard <количество> — покажет лучших игроков с наибольшим балансом.
-
-Пример: !leaderboard 5
-
-📅 День рождения
-
-!birthday <количество> — покажет ближайшие дни рождения участников сервера.
-
-Пример: !birthday 3
-
-🧑‍💻 Как настроить команды:
-
-Слот-машина: Команда !slots позволяет игрокам испытать удачу. Установите шанс на выигрыш, используя файл slot_probabilities.json.
-
-Ежедневные бонусы: Команда !daily позволяет игрокам получать ежедневный бонус. Дата последнего получения бонуса сохраняется в файле daily_claims.json.
-
-Перевод денег: Игроки могут передавать монеты друг другу с помощью команды !givemoney. Это работает с файлом user_balances.json, где хранится баланс каждого игрока.
-
-🔧 Как настроить файлы:
-
-config.py: Этот файл содержит настройки для бота, такие как токен и уровни логирования.
-
-user_balances.json: Этот файл хранит баланс всех игроков. Если файл отсутствует, он будет создан автоматически.
-
-daily_claims.json: Хранит даты, когда пользователи забрали ежедневный бонус.
-
-slot_probabilities.json: Определяет вероятности выпадения символов на слот-машине.
-
-🔒 Безопасность:
-
-Token: Никогда не публикуйте ваш токен Discord бота в открытых репозиториях. Используйте переменные окружения или файл .env для хранения конфиденциальных данных.
-
-Права доступа: Убедитесь, что у бота только необходимые права для работы. Например, права на чтение сообщений и отправку их в чат, управление ролями и доступ к каналам.
+    
