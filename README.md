@@ -8,8 +8,8 @@ The **BND Bot** is a discord entertaiment bot with several types of fun and usef
 while hanging out with players!
 
 Key technical challenges addressed in this project include:
-* **Asynchronous Programming:** Managing multiple concurrent events and commands.
-* **Modular Design:** Utilizing Discord "Cogs" to keep the codebase maintainable.
+* **Async code:** Managing multiple concurrent events and commands
+* **Modular design:** Utilizing Discord "Cogs" to keep the codebase maintainable
 
 ## 📂 Project Structure
 
@@ -28,7 +28,7 @@ P.S: I was foced to rebuild project due to CS50 requirements , u can check main 
 
 ## 🛠️ Installation & Usage
 
-### Prerequisites
+### REQ
 * Python 3.14
 * A Discord token from (https://discord.com/developers/applications).
 
@@ -56,4 +56,14 @@ P.S: I was foced to rebuild project due to CS50 requirements , u can check main 
 
 6. **Commands**
     You can use **!command** to see available commands for bot
+
+## 🫂 Contributors
+    * Special thanks to Nikita for supporting and advices (https://github.com/Shampurik)
+    * Nikita added Docker to my project and showed how to use .env files
+    * Also working for music cog for our Bot!
+
+## 🚧 TODO / WIP
+    * Fix some  gaming activity issues
+    * Add postgre database for user info
+    * Add music cog to play playlists in voice chat
 
