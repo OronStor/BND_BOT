@@ -213,7 +213,7 @@ class GambleCog(commands.Cog):
             user_id = str(ctx.author.id)
             user_balance = self.load_balances()
 
-            # Проверяем, достаточно ли средств для ставки
+            # Check if player didnt register
             if user_id not in user_balance:
                 await ctx.send("Use command `!register` to start!.")
                 return

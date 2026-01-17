@@ -3,6 +3,7 @@
 
 ## 📝 Description
 This project is the final project for **Harvard's CS50P**. 
+https://youtu.be/mRut3_PkPmc
 
 The **BND Bot** is a discord entertaiment bot with several types of fun and useful functions which you can use 
 while hanging out with players!
