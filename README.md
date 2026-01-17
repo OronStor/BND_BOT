@@ -1,8 +1,8 @@
 # BND Discord Bot
-> A modular and interactive Discord bot featuring automated media delivery, a gambling system, and robust server monitoring.
+> A modular and discord bot featuring fun commands , on_event actions , gambling system ,  server monitoring.
 
 ## 📝 Description
-This project is the final project for **Harvard's CS50P (Introduction to Programming with Python)**. 
+This project is the final project for **Harvard's CS50P**. 
 
 The **BND Bot** is a discord entertaiment bot with several types of fun and useful functions which you can use 
 while hanging out with players!
@@ -50,6 +50,10 @@ P.S: I was foced to rebuild project due to CS50 requirements , u can check main 
     python project.py
 
 5. **Tests**
-    Just run python -m pytest
+    Just run
+    ```bash 
+    python -m pytest
 
-    
+6. **Commands**
+    You can use **!command** to see available commands for bot
+
